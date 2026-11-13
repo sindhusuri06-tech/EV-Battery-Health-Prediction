@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>EV Battery Health Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main class="wrap">
+  <header><p class="tag">AI / MACHINE LEARNING PROJECT</p>
+    <h1>EV Battery Health Predictor</h1>
+    <p>Enter battery operating values to estimate its health category.</p>
+  </header>
+  {% with messages = get_flashed_messages() %}{% if messages %}
+    <div class="notice">{% for message in messages %}{{ message }}{% endfor %}</div>
+  {% endif %}{% endwith %}
+  <section class="panel">
+    <h2>Single battery prediction</h2>
+    <form method="post">
+      <div class="grid">
+      {% for field, label, value in [
+        ('Voltage_V','Voltage (V)','350'),('Current_A','Current (A)','20'),
+        ('Temperature_C','Temperature (°C)','28'),('SOH_Percentage','SOH (%)','90'),
+        ('Internal_Resistance_mOhm','Internal resistance (mΩ)','35'),
+        ('Cycle_Count','Cycle count','500'),('Impedance_Growth','Impedance growth','0.1'),
+        ('Aging_Rate','Aging rate','0.02')] %}
+        <label>{{ label }}<input name="{{ field }}" type="number" step="any" value="{{ value }}" required></label>
+      {% endfor %}
+      <label>Vehicle type<select name="Vehicle_Type"><option>Sedan</option><option>SUV</option><option>Commercial</option></select></label>
+      <label>Battery chemistry<select name="Battery_Chemistry"><option>LFP</option><option>NMC</option><option>NCA</option></select></label>
+      <label>Manufacturer<select name="Manufacturer"><option>Tesla</option><option>BYD</option><option>LG</option><option>Panasonic</option><option>Samsung</option></select></label>
+      <label>Driving load<select name="Driving_Load"><option>Light</option><option>Moderate</option><option>Heavy</option></select></label>
+      <label>Weather condition<select name="Weather_Condition"><option>Sunny</option><option>Rainy</option><option>Snowy</option><option>Hot</option><option>Cold</option></select></label>
+      </div>
+      <button type="submit">Predict battery health</button>
+    </form>
+    {% if result %}
+    <div class="result"><h2>Prediction: {{ result }}</h2>
+      <p>{{ advice }}</p><h3>Class probabilities</h3>
+      {% for name, value in probability.items() %}<p>{{ name }}: {{ value }}%</p>{% endfor %}
+    </div>{% endif %}
+  </section>
+  <section class="panel"><h2>Batch CSV prediction</h2>
+    <p>Upload a CSV containing the same input columns used by the model.</p>
+    <form action="{{ url_for('batch') }}" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" accept=".csv" required><button type="submit">Predict CSV</button>
+    </form>
+  </section>
+  <footer>Educational prototype. This prediction is not a substitute for a qualified EV battery inspection.</footer>
+</main>
+</body></html>
