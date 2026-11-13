@@ -1,0 +1,28 @@
+SYSTEM FLOW
+Battery CSV
+   |
+   v
+Data validation and cleaning
+   |
+   v
+Feature engineering
+   |
+   v
+Train/test split (stratified)
+   |
+   +--> Preprocessing + SMOTE + Logistic Regression
+   |
+   +--> Preprocessing + SMOTE + Random Forest
+   |
+   v
+5-fold CV and held-out test evaluation
+   |
+   v
+Save selected model
+   |
+   v
+Flask web application
+   |
+   +--> Single battery prediction
+   +--> Batch CSV prediction
+   +--> Health category and maintenance guidance
